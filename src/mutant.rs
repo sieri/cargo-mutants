@@ -32,6 +32,8 @@ pub enum Genre {
     MatchArmGuard,
     /// Delete a field from a struct literal that has a base (default) expression.
     StructField,
+    /// Change a method to an other
+    MethodSubstitution,
 }
 
 /// The target of a mutation, providing additional context about what is being mutated.

@@ -25,6 +25,7 @@ mod interrupt;
 mod lab;
 mod list;
 mod manifest;
+mod method_substitutions;
 mod mutant;
 mod options;
 mod outcome;

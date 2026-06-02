@@ -25,6 +25,7 @@ use tracing::{debug_span, error, info, trace, trace_span, warn};
 
 use crate::console::WalkProgress;
 use crate::fnvalue::return_type_replacements;
+use crate::method_substitutions::find_substitution;
 use crate::mutant::{Function, MutationTarget};
 use crate::package::Package;
 use crate::pretty::ToPrettyString;
@@ -406,6 +407,12 @@ impl<'ast> Visit<'ast> for DiscoveryVisitor<'_> {
                 return;
             }
         }
+        let replacements = find_substitution(i.func.to_pretty_string().as_str());
+
+        for rep in replacements {
+            dbg!(&rep);
+            self.collect_mutant(i.func.span().into(), None, &rep, Genre::MethodSubstitution);
+        }
         syn::visit::visit_expr_call(self, i);
     }
 
@@ -418,6 +425,19 @@ impl<'ast> Visit<'ast> for DiscoveryVisitor<'_> {
             trace!("skip method call to {hit}");
             return;
         }
+
+        let replacements = find_substitution(i.method.to_string().as_str());
+
+        for rep in replacements {
+            dbg!(&rep);
+            self.collect_mutant(
+                dbg!(i.method.span()).into(),
+                None,
+                &rep,
+                Genre::MethodSubstitution,
+            );
+        }
+
         syn::visit::visit_expr_method_call(self, i);
     }
 
